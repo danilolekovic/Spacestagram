@@ -26,30 +26,41 @@ export default class PostList extends React.Component<PostListProps, PostListSta
   }
 
   componentDidMount() {
-    this.getPosts();
+    this.getPosts(true);
   }
 
+  // Converts date to YYYY-MM-DD format
   convertDateToFormat(date: Date): string {
     const offset = date.getTimezoneOffset()
     date = new Date(date.getTime() - (offset*60*1000))
     return date.toISOString().split('T')[0]
   }
 
-  getPosts() {
+  // Gets posts from NASA API
+  getPosts(isInitialRequest: boolean = false, numberOfPosts: number = 5) {
     document.getElementById("spinningButton")?.classList.add("spinning-icon");
 
-    const startDate = new Date(this.state.startDate);
-    startDate.setDate(startDate.getDate() - 5);
+    const startDate: Date = new Date(this.state.startDate);
+    startDate.setDate(startDate.getDate() - numberOfPosts);
 
-    this.setState({ startDate: startDate });
+    const endDate: Date = new Date(this.state.startDate);
+    const endDateOffset: number = isInitialRequest ? 0 : -1;
 
-    const query = 'https://api.nasa.gov/planetary/apod?api_key=' + this.apiKey +
-                  '&start_date=' + this.convertDateToFormat(startDate) + '&end_date=' + this.convertDateToFormat(this.state.endDate);
+    endDate.setDate(endDate.getDate() + endDateOffset);
+
+    this.setState({ startDate: startDate, endDate: endDate });
+
+    const query: string = 'https://api.nasa.gov/planetary/apod?api_key=' + this.apiKey +
+                  '&start_date=' + this.convertDateToFormat(startDate) + '&end_date=' + this.convertDateToFormat(endDate);
 
     axios.get(query)
       .then((response) => {
+        const posts = this.state.posts;
+
+        response.data.reverse().forEach((e: any) => posts.push(e));
+
         this.setState({
-          posts: response.data.reverse(),
+          posts: posts,
         });
       }).catch((error) => {
         console.log(error);
