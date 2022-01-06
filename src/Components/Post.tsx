@@ -33,7 +33,7 @@ export default class Post extends React.Component<PostProps, PostState> {
     return (
       <div>
         <div className="max-w-lg rounded overflow-hidden shadow-lg">
-          { this.isImage(this.props.image) ? <img className="w-full" src={this.props.image} alt="Mountain" /> : <iframe className="w-full" src={this.props.image}></iframe> }
+          { this.isImage(this.props.image) ? <img className="w-full" src={this.props.image} alt="" /> : <iframe className="w-full" src={this.props.image}></iframe> }
           <div className="px-6 py-4">
 
           <button className="inline-block text-sm emoji-deactivated like-post float-right"
