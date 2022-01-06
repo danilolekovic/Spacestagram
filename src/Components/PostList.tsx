@@ -25,10 +25,26 @@ export default class PostList extends React.Component<PostListProps, PostListSta
     };
 
     this.getPosts = this.getPosts.bind(this);
+    this.handleScroll = this.handleScroll.bind(this);
   }
 
   componentDidMount() {
+    window.addEventListener('scroll', this.handleScroll);
     this.getPosts(true);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('scroll', this.handleScroll);
+  }
+
+  // Checks if we are at the bottom of the page, and if so, loads more posts
+  handleScroll() {
+    var scrollTop = (document.documentElement && document.documentElement.scrollTop) || document.body.scrollTop;
+    var scrollHeight = (document.documentElement && document.documentElement.scrollHeight) || document.body.scrollHeight;
+    var scrolledToBottom = (scrollTop + window.innerHeight) >= scrollHeight;
+
+    if (scrolledToBottom && !document.getElementById("spinningButton")?.classList.contains("spinning-icon"))
+      this.getPosts();
   }
 
   // Converts date to YYYY-MM-DD format
@@ -40,6 +56,9 @@ export default class PostList extends React.Component<PostListProps, PostListSta
 
   // Gets posts from NASA API
   getPosts(isInitialRequest: boolean = false, numberOfPosts: number = 5) {
+    if (document.getElementById("spinningButton")?.classList.contains("spinning-icon"))
+      return;
+
     document.getElementById("spinningButton")?.classList.add("spinning-icon");
 
     const startDate: Date = new Date(this.state.startDate);
