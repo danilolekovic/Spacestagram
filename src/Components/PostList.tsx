@@ -100,7 +100,7 @@ export default class PostList extends React.Component<PostListProps, PostListSta
 
     return (
       <div className="flex items-center justify-center h-screen">
-        <div className="grid grid-cols-1 gap-6 m-auto pt-6 pb-6">
+        <div className="grid grid-cols-1 gap-6 m-auto pt-6 pb-6 pl-3 pr-3">
           <h1 className="text-slate-800 text-2xl">Spacestagram</h1>
           <h2 className="text-slate-600 text-base">Brought to you by NASA's Astronomy Photo of the Day API</h2>
           {this.state.errorMessage !== "" ? <h3 className="text-red-400 text-base">{this.state.errorMessage}</h3> : ""}
