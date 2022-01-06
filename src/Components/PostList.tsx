@@ -8,6 +8,7 @@ interface PostListState {
   posts: any;
   startDate: Date;
   endDate: Date;
+  errorMessage: string;
 }
 
 export default class PostList extends React.Component<PostListProps, PostListState> {
@@ -20,6 +21,7 @@ export default class PostList extends React.Component<PostListProps, PostListSta
       posts: [],
       startDate: new Date(),
       endDate: new Date(),
+      errorMessage: "",
     };
 
     this.getPosts = this.getPosts.bind(this);
@@ -63,7 +65,9 @@ export default class PostList extends React.Component<PostListProps, PostListSta
           posts: posts,
         });
       }).catch((error) => {
-        console.log(error);
+        this.setState({
+          errorMessage: "An error occurred while fetching posts. Please try again later.",
+        });
       }).finally(() => {
         document.getElementById("spinningButton")?.classList.remove("spinning-icon");
       });
@@ -80,6 +84,7 @@ export default class PostList extends React.Component<PostListProps, PostListSta
         <div className="grid grid-cols-1 gap-6 m-auto pt-6 pb-6">
           <h1 className="text-slate-800 text-2xl">Spacestagram</h1>
           <h2 className="text-slate-600 text-base">Brought to you by NASA's Astronomy Photo of the Day API</h2>
+          {this.state.errorMessage !== "" ? <h3 className="text-red-400 text-base">{this.state.errorMessage}</h3> : ""}
           {posts}
           <button id="spinningButton" onClick={() => this.getPosts()}>&#x21bb;</button>
         </div>
